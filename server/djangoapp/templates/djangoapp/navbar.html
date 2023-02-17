@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary flex-nowrap">
+    <div class="d-flex flex-grow-1">
+        <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
+        <a class="navbar-brand" href="#">
+            <h2>{{ pageheader1|default:"Best Cars"}}</h2>
+        </a>
+        <div class="w-100 text-right">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar7">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar7">
+        <ul class="navbar-nav ml-auto flex-nowrap">
+            <li class="nav-item">
+                <a class="nav-link {% if page == 'home' %}active{% endif %}"  
+                    href="{% url 'djangoapp:index' %}">Home</a>
+                  </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page == 'about' %}active{% endif %}" 
+                    href="{% url 'djangoapp:about' %}">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page == 'contact' %}active{% endif %}" 
+                    href="{% url 'djangoapp:contact' %}">Contact Us</a>
+            </li>
+        </ul>
+    </div>
+</nav>

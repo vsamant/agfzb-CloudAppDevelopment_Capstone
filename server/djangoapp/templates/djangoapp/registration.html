@@ -4,8 +4,45 @@
     <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+    .custom {
+        width: 50% !important;
+    }
+    </style>
 </head>
-    <body>
+<body>
+    {% include "djangoapp/navbar.html" with pageheader="Sign up" page="signup"%}  
     <!--Add a registration form here -->
-    </body>
+    <form action="{% url 'djangoapp:registration' %}" method="post">
+        <div class="container">
+          <h1>Sign Up</h1>
+          <hr>
+          <div>
+            <label for="username"><b>User Name</b></label>
+            <input type="text" class="form-control rounded custom" 
+                placeholder="Enter User Name: " name="username" required>
+          </div>
+          <div>
+            <label for="firstname"><b>First Name</b></label>
+            <input type="text" class="form-control rounded custom" 
+                placeholder="Enter First Name: " name="firstname" required>
+          </div>
+          <div>
+            <label for="lastname"><b>Last Name</b></label>
+            <input type="text" class="form-control rounded custom" 
+                placeholder="Enter Last Name: " name="lastname" required>
+          </div>
+          <div>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" class="form-control rounded custom" 
+                placeholder="Enter Password: " name="psw" required>
+          </div>
+          <br/>
+          <div>
+              {% csrf_token %}
+              <button class="btn btn-primary me-1" type="submit">Sign Up</button>
+          </div>
+        </div>
+    </form>
+</body>
 </html>
