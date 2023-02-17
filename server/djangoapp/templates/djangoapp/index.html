@@ -14,9 +14,51 @@
 </head>
 
     <body>
-    <!-- Remove this line the first time you edit this file -->
-     This is the index page of your Django app!
     <!--Add a nav bar here -->
+    {% include "djangoapp/navbar.html" with page="home" %}  
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                   <p class="font-mono-space text-white">Dealership Review</p>
+                </li>
+            </ul>
+        </div>
+        {% if not user.is_authenticated  %}
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form action="{% url 'djangoapp:login' %}" class="d-flex input-group w-auto" method="post">
+                        {% csrf_token %}
+                        <input type="text" placeholder="Username" name="username" class="form-control rounded">
+                        &nbsp;
+                        <input type="password" placeholder="Password" name="psw" class="form-control rounded">
+                        &nbsp;
+                        <button type="submit" class="btn btn-primary me-1">Login</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    &nbsp;
+                    <button type="submit" class="btn btn-secondary mb-1 me-1"
+                        onclick = "window.location.href='{% url 'djangoapp:registration' %}'">
+                        Sign up
+                      </button>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link">({% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{ user }} {% endif %})</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'djangoapp:logout' %}">Log out</a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </nav>
 
     <!--Add a dealer table here -->
 
