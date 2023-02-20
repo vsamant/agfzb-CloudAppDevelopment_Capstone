@@ -1,11 +1,16 @@
 import requests
 import json
+import os
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
+from dotenv import load_dotenv
+
 
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
+
+load_dotenv()
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -113,8 +118,9 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(**kwargs):
-    api_key = 'X2HC6X0f1o2JdZE3IuXCLeXD6RWpGNHG5MtUlHjcwXx3'
-    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/3031277c-99d5-4fab-919c-cfc07f0d00e4'
+    #load_dotenv()
+    api_key = os.environ["nlu_api_key"]
+    url = os.environ["nlu_url"]
     #params = dict()
     #params["text"] = kwargs["text"]
     #params["version"] = kwargs["version"]
