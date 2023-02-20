@@ -14,7 +14,7 @@ class CarMake(models.Model):
     description = models.CharField(null=False, max_length=100)
 
     def __str__(self):
-        return self.name + " " + self.description
+        return self.name + " (" + self.description + ")"
 
 # <HINT> Create a Car Model model `class CarModel(models.Model):`:
 # - Many-To-One relationship to Car Make model (One Car Make has many Car Models, using ForeignKey field)
@@ -45,12 +45,12 @@ class CarModel(models.Model):
         default=SEDAN
     )
     
-    year = models.DateField(null=False)
+    year = models.DateField(null=True)
 
     make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name + " " + self.model_type + " " + self.year
+        return self.name + " (" + self.model_type + " " + self.year.strftime("%Y") + ")"
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
