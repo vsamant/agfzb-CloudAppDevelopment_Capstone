@@ -36,7 +36,7 @@ def get_dealers_from_cf(url, **kwargs):
     json_result = get_request(url)
     if json_result:
         # Get the row list in JSON as dealers
-        print (json_result)
+        #print (json_result)
         dealers = json_result["dealerships"]
         # For each dealer object
         for dealer in dealers:
@@ -51,16 +51,44 @@ def get_dealers_from_cf(url, **kwargs):
 
     return results
 
+def get_dealer_by_id(url, dealer_id):
+    return get_dealers_from_cf(url+"?dealerId="+str(dealerId))
+
+def get_dealer_by_state(url, state):
+    return get_dealers_from_cf(url+"?state="+state)
+
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # def get_dealer_by_id_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
-def get_dealer_by_id(url, dealerId):
-    return get_dealers_from_cf(url+"?dealerId="+str(dealerId))
+def get_dealer_reviews_from_cf(url, dealer_id):
+    results = []
+    # Call get_request with a URL parameter
+    json_result = get_request(url, "dealerId="+str(dealer_id))
+    if json_result:
+        # Get the row list in JSON as reviews
+        #print (json_result)
+        reviews = json_result["reviews"]
+        # For each review object
+        for review in reviews:
+            # Get its content in `doc` object
+            #dealer_doc = dealer["doc"]
+            # Create a CarDealer object with values in `doc` object
+            review_obj = DealerReview(dealership=review["dealership"], 
+                                        name=review["name"], 
+                                        purchase=review["purchase"], 
+                                        review=review["review"], 
+                                        purchase_date=review["purchase_date"], 
+                                        car_make=review["car_make"], 
+                                        car_model=review["car_model"], 
+                                        car_year=review["car_year"], 
+                                        sentiment='positive', 
+                                        id=review["id"])
 
-def get_dealer_by_state(url, state):
-    return get_dealers_from_cf(url+"?state="+state)
+            results.append(review_obj)
+
+    return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 # def analyze_review_sentiments(text):
