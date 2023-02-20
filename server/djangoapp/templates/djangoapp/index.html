@@ -61,7 +61,11 @@
     </nav>
 
     <!--Add a dealer table here -->
-
+    {% if error_message %}
+    <div class="alert alert-warning"> <!--Style the message paragraph with .alert and .alert-warning class -->
+        {{ error_message }}
+      </div>
+    {% endif %}
     </body>
 
 </html>

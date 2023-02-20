@@ -25,6 +25,7 @@ You must complete all the labs to successfully complete the project.
 1. Create cloud functions to manage dealers and reviews
 2. Create Django models and views to manage car model and car make
 3. Create Django proxy services and views to integrate dealers, reviews, and cars together
+4. Add .env file to server folder, and enter the watson nlu url and api keys
  
 **Add dynamic pages with Django templates**
 1. Create a page that shows all the dealers
