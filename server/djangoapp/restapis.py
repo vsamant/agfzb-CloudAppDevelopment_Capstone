@@ -1,8 +1,11 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -12,6 +15,11 @@ def get_request(url, **kwargs):
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
+        #if api_key:
+        #    requests.get(url, headers={'Content-Type': 'application/json'},
+        #                    params=kwargs,
+        #                    auth=HTTPBasicAuth('apikey', api_key))
+        #else:
         response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
@@ -65,7 +73,11 @@ def get_dealer_by_state(url, state):
 def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # Call get_request with a URL parameter
-    json_result = get_request(url, "dealerId="+str(dealer_id))
+    new_url = url
+    if dealer_id != -1:
+        new_url += "?dealerId="+str(dealer_id)
+
+    json_result = get_request(new_url)
     if json_result:
         # Get the row list in JSON as reviews
         #print (json_result)
@@ -75,15 +87,21 @@ def get_dealer_reviews_from_cf(url, dealer_id):
             # Get its content in `doc` object
             #dealer_doc = dealer["doc"]
             # Create a CarDealer object with values in `doc` object
+            purchase_date = review["purchase_date"] if "purchase_date" in review else None
+            car_make = review["car_make"] if "car_make" in review else None
+            car_model = review["car_model"] if "car_model" in review else None
+            car_year = review["car_year"] if "car_year" in review else None
+            sentiment = analyze_review_sentiments(text=review["review"])
+
             review_obj = DealerReview(dealership=review["dealership"], 
                                         name=review["name"], 
                                         purchase=review["purchase"], 
                                         review=review["review"], 
-                                        purchase_date=review["purchase_date"], 
-                                        car_make=review["car_make"], 
-                                        car_model=review["car_model"], 
-                                        car_year=review["car_year"], 
-                                        sentiment='positive', 
+                                        purchase_date=purchase_date, 
+                                        car_make=car_make, 
+                                        car_model=car_model, 
+                                        car_year=car_year, 
+                                        sentiment=sentiment, 
                                         id=review["id"])
 
             results.append(review_obj)
@@ -94,6 +112,35 @@ def get_dealer_reviews_from_cf(url, dealer_id):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(**kwargs):
+    api_key = 'X2HC6X0f1o2JdZE3IuXCLeXD6RWpGNHG5MtUlHjcwXx3'
+    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/3031277c-99d5-4fab-919c-cfc07f0d00e4'
+    #params = dict()
+    #params["text"] = kwargs["text"]
+    #params["version"] = kwargs["version"]
+    #params["features"] = kwargs["features"]
+    #params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+    #response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+    #                            auth=HTTPBasicAuth('apikey', api_key))
+    #print(response.json)
+    #return response.text
+    
+    authenticator = IAMAuthenticator(api_key)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(
+        version='2022-04-07',
+        authenticator=authenticator)
 
+    natural_language_understanding.set_service_url(url)
 
+    sentiment = "analyzing"
+    try:
+        response = natural_language_understanding.analyze(
+            text=kwargs["text"],
+            features=Features(sentiment=SentimentOptions(targets=[kwargs["text"]]))).get_result()
+        print(json.dumps(response, indent=2))
+        sentiment = response["sentiment"]["document"]["label"]
 
+    except:
+        print("Unable to analyze " + kwargs["text"])
+
+    return sentiment

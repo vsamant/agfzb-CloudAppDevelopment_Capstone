@@ -108,7 +108,7 @@ def get_dealerships(request):
         #dealerships = get_dealer_by_id(url, 15)
         #dealerships = get_dealer_by_state(url, 'Texas')
         # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        dealer_names = '<br/> '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
         return HttpResponse(dealer_names)
 
@@ -120,11 +120,15 @@ def get_dealer_details(request, dealer_id):
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/ccde7b60-0223-47b0-b34a-f12b6ebf215e/api/review.json"
         # Get reviews for dealer
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
-        review_names = ' '.join(["("+ review.name + " for dealer " + review.dealership + ")" for review in reviews])
+        review_names = '<br/> '.join([ review.name + " for dealer " + 
+                str(review.dealership) + " => " + review.review +
+                " :: " + review.sentiment for review in reviews])
         # Return a list of reviewer names
         return HttpResponse(review_names)
 
-
+def test_views(request):
+    #return get_dealerships(request)
+    return get_dealer_details(request, -1)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
