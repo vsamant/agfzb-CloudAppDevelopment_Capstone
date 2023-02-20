@@ -45,7 +45,7 @@ def login_request(request):
         # Get username and password from request.POST dictionary
         username = request.POST['username']
         password = request.POST['psw']
-        print("{} {}".format(username, password))
+        print("login as {} {}".format(username, password))
              # Try to check if provide credential can be authenticated
         user = authenticate(username=username, password=password)
         print("Authenticated user {}".format(user))
@@ -53,13 +53,15 @@ def login_request(request):
         if user is not None:
             # If user is valid, call login method to login current user
             login(request, user)
-            print('is auth {} ',user.is_authenticated)
+            print('is auth {} '.format(user.is_authenticated))
             return redirect('djangoapp:index')
         else:
             # If not, return to login page again
-            return render(request, 'djangoapp:index', context)
+            #return render(request, 'djangoapp:index', context)
+            return redirect('djangoapp:index')
     else:
-        return render(request, 'djangoapp:index', context)
+        #return render(request, 'djangoapp:index', context)
+        return redirect('djangoapp:index')
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
@@ -97,8 +99,9 @@ def registration_request(request):
             user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                             password=password)
             # Login the user and redirect to course list page
+
             login(request, user)
-            print("returning djangoapp:index")
+            print("returning djangoapp:index for user " + user)
             return redirect("djangoapp:index")
 
         else:
@@ -159,14 +162,17 @@ def add_review(request, dealer_id):
     review["dealership"] = dealer_id
     #review["review"] = request.POST["review"]
     review["review"] = "This is a great car dealer"
-    review["full_name"] = request.user.name
+    review["name"] = request.user.first_name + " " + request.user.last_name
+    review["purchase"] = False
+
+    print(review)
 
     json_payload = {}
     json_payload["review"] = review
 
-    post_request(url, json_payload, dealerId=dealer_id)
+    response = post_request(url, json_payload, dealerId=dealer_id)
     context = {}
-    context["error_message"] = "Posted review"
+    context["error_message"] = "Posted review " + response
     return render(request, 'djangoapp/index.html', context)
 
 
