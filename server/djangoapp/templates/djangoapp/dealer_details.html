@@ -48,7 +48,7 @@
                     <a class="nav-link">({% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{ user }} {% endif %})</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'djangoapp:logout' %}">Add Review</a>
+                    <a class="nav-link" href="{% url 'djangoapp:add_review' dealer.id %}">Add Review</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'djangoapp:logout' %}">Log out</a>

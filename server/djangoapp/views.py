@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarDealer
+from .models import CarDealer, CarModel
 from .restapis import get_dealers_from_cf, get_dealer_by_id, \
         get_dealer_by_state, get_dealer_reviews_from_cf, \
         post_request
@@ -115,7 +115,6 @@ def get_dealerships(request):
         url = os.environ["url_get_dealership"]
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
-        print("Found dealers {}".format(dealerships))
         context = {}
         context["dealership_list"] = dealerships
         return render(request, 'djangoapp/index.html', context)
@@ -130,9 +129,6 @@ def get_dealer_details(request, dealer_id):
         url = os.environ["url_get_review"]
         # Get reviews for dealer
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
-        review_names = '<br/> '.join([ review.name + " for dealer " + 
-                str(review.dealership) + " => " + review.review +
-                " :: " + review.sentiment for review in reviews])
         # Return a list of reviews in context
         context["dealer_reviews"]=reviews
         # get dealer information
@@ -155,27 +151,40 @@ def add_review(request, dealer_id):
         context = {}
         context["error_message"] = "Only authorized users are allowed to access."
         return render(request, 'djangoapp/index.html', context)
-            
-    url = os.environ["url_post_review"]
 
-    print(request.user)
-    ## User is authorized
-    review = {}
-    review["time"] = datetime.utcnow().isoformat()
-    review["dealership"] = dealer_id
-    #review["review"] = request.POST["review"]
-    review["review"] = "This is a great car dealer"
-    review["name"] = request.user.first_name + " " + request.user.last_name
-    review["purchase"] = False
 
-    print(review)
+    if request.method == "POST":
+        url = os.environ["url_post_review"]
 
-    json_payload = {}
-    json_payload["review"] = review
+        print(request.user)
+        ## User is authorized
+        review = {}
+        review["purchase_date"] = request.POST["purchasedate"]
+        review["dealership"] = dealer_id
+        #review["review"] = request.POST["review"]
+        review["review"] = request.POST["content"]
+        review["name"] = request.user.first_name + " " + request.user.last_name
+        review["purchase"] = False
 
-    response = post_request(url, json_payload, dealerId=dealer_id)
-    context = {}
-    context["error_message"] = "Posted review " + response
-    return render(request, 'djangoapp/index.html', context)
+        car_id = request.POST["car"]
+        car =  get_object_or_404(CarModel, pk=car_id)
+        if car:
+            review["car_make"] = car.make.name
+            review["car_model"] = car.name
+            review["car_year"] = car.year.strftime("%Y")
+     
+
+        json_payload = {}
+        json_payload["review"] = review
+
+        response = post_request(url, json_payload, dealerId=dealer_id)
+        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+    else:
+        context = {}
+        context["cars"] = CarModel.objects.all
+        get_dealer_url = os.environ["url_get_dealership"]
+        context["dealer"]=get_dealer_by_id(get_dealer_url, dealer_id)
+        return render(request, 'djangoapp/add_review.html', context)
+        
 
 
