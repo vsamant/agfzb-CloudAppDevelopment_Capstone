@@ -133,8 +133,12 @@ def get_dealer_details(request, dealer_id):
         review_names = '<br/> '.join([ review.name + " for dealer " + 
                 str(review.dealership) + " => " + review.review +
                 " :: " + review.sentiment for review in reviews])
-        # Return a list of reviewer names
-        return HttpResponse(review_names)
+        # Return a list of reviews in context
+        context["dealer_reviews"]=reviews
+        # get dealer information
+        get_dealer_url = os.environ["url_get_dealership"]
+        context["dealer"]=get_dealer_by_id(get_dealer_url, dealer_id)
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 def test_views(request):
     #return get_dealerships(request)

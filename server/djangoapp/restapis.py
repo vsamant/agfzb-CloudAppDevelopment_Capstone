@@ -75,7 +75,8 @@ def get_dealers_from_cf(url, **kwargs):
     return results
 
 def get_dealer_by_id(url, dealer_id):
-    return get_dealers_from_cf(url+"?dealerId="+str(dealerId))
+    dealers = get_dealers_from_cf(url+"?dealerId="+str(dealer_id))
+    return dealers[0]
 
 def get_dealer_by_state(url, state):
     return get_dealers_from_cf(url+"?state="+state)
@@ -148,7 +149,7 @@ def analyze_review_sentiments(**kwargs):
 
     natural_language_understanding.set_service_url(url)
 
-    sentiment = "analyzing"
+    sentiment = "neutral"
     try:
         response = natural_language_understanding.analyze(
             text=kwargs["text"],
