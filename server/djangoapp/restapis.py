@@ -61,11 +61,13 @@ def get_dealers_from_cf(url, **kwargs):
         # Get the row list in JSON as dealers
         #print (json_result)
         dealers = json_result["dealerships"]
+        #print("Dealers {}".format(dealers))
         # For each dealer object
         for dealer in dealers:
             # Get its content in `doc` object
             #dealer_doc = dealer["doc"]
             # Create a CarDealer object with values in `doc` object
+            print("Found dealer {} {}".format(dealer["id"], dealer["full_name"]))
             dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
                                    id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
                                    short_name=dealer["short_name"],
@@ -75,11 +77,14 @@ def get_dealers_from_cf(url, **kwargs):
     return results
 
 def get_dealer_by_id(url, dealer_id):
-    return get_dealers_from_cf(url+"?dealerId="+str(dealerId))
+    dealers = get_dealers_from_cf(url+"?id="+str(dealer_id))
+    return dealers[0]
 
 def get_dealer_by_state(url, state):
     return get_dealers_from_cf(url+"?state="+state)
 
+def get_dealer_by_st(url, st):
+    return get_dealers_from_cf(url+"?st="+st)
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # def get_dealer_by_id_from_cf(url, dealerId):
@@ -92,6 +97,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     if dealer_id != -1:
         new_url += "?dealerId="+str(dealer_id)
 
+    print("calling get_dealer_reviews_from_cf {}".format(dealer_id))
     json_result = get_request(new_url)
     if json_result:
         # Get the row list in JSON as reviews
@@ -148,13 +154,14 @@ def analyze_review_sentiments(**kwargs):
 
     natural_language_understanding.set_service_url(url)
 
-    sentiment = "analyzing"
+    sentiment = "neutral"
     try:
         response = natural_language_understanding.analyze(
             text=kwargs["text"],
             features=Features(sentiment=SentimentOptions(targets=[kwargs["text"]]))).get_result()
-        print(json.dumps(response, indent=2))
+        #print(json.dumps(response, indent=2))
         sentiment = response["sentiment"]["document"]["label"]
+        print(" {} => {}".format(text,sentiment))
 
     except:
         print("Unable to analyze " + kwargs["text"])
