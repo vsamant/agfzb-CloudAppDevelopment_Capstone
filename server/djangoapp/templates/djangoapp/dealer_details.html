@@ -57,6 +57,8 @@
         </div>
         {% endif %}
     </nav>
+
+    <div class="container">
     <h2>
         Reviews for {{ dealer.full_name}}
     </h2>
@@ -72,15 +74,13 @@
             <img class="card-img-left w-25 h-25" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
             </div>
             <div class="card-body">
-                <div class="card-title">
-                    {{ review.car_make }}, {{review.car_model}}
-                </div>
-                <div class="card-text">
-                    {{ review.review }}
-                </div>
+                <h5 class="card-title">{{ review.car_make }}, {{review.car_model}}</h5>
+                <h5 class="card-title mb-2 text-muted">{{ review.car_year}}</h5>
+                <div class="card-text">{{ review.review }}</div>
             </div>
         </div>
     {% endfor %}
+    </div>
     </div>
 
     </body>

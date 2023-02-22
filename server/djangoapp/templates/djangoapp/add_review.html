@@ -40,29 +40,29 @@
     <!--Add review form here -->
     <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
         {% csrf_token %}
-        <div>
-            <label for="username">Enter the review comment:</label> <br/>
+        <div class="form-group">
+            <label for="username"><h6>Enter the review comment:</h6></label> <br/>
             <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
         </div>
-        <div>
+        <div class="form-check">
             <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck"/>
-            <label for="purchased">Has purchased the car from {{ dealer.full_name }} ? (select purchased car information below if checked)</label>
+            <label for="purchased"><h6>Has purchased the car from {{ dealer.full_name }} ? <small> (select purchased car information below if checked)</small></h6></label>
         </div>
-        <div>
-            <label for="carselect">Select your car (model-make-year):</label> &nbsp;
+        <div class="form-group">
+            <label for="carselect"><h6>Select your car (model-make-year):</h6></label> &nbsp;
             <select name="car" id="car" class="form-select" required>
                 {% for car in cars %}
                 <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year|date:"Y" }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div>
-            <label for="purchasedate">Select your purchase date:</label> &nbsp;
-            <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
+        <div class="form-group">
+            <label for="purchasedate"><h6>Select your purchase date:</h6></label> <br/>
+            <input class="date-own .col-xs-3" type="text" name="purchasedate" id="purchasedate">
         </div>
         <div>
             <br/>
-            <button class="btn btn-primary me-1 center" type="submit">Sign Up</button>
+            <button class="btn btn-primary me-1 center" type="submit">Submit</button>
         </div>
     </form>
     </div>
