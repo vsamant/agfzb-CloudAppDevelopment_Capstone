@@ -94,3 +94,19 @@ class DealerReview:
             self.car_year = car_year
             self.sentiment = sentiment
             self.id = id
+
+        @property
+        def textColor(self):
+            if self.sentiment == 'negative':
+                return 'text-danger'
+            if self.sentiment == 'neutral':
+                return 'text-secondary'
+            return 'text-success'
+
+        @property
+        def borderColor(self):
+            if self.sentiment == 'negative':
+                return 'border-danger'
+            if self.sentiment == 'neutral':
+                return 'border-secondary'
+            return 'border-success'

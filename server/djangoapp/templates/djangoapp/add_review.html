@@ -8,7 +8,15 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-
+    <style>
+        body  
+        {  
+            background-image:url("{{MEDIA_URL}}/images/car_night_highway.jpg") ;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style> 
 </head>
 <body>
     <!--Add a nav bar here -->
@@ -33,23 +41,24 @@
             </ul>
         </div>
     </nav>
+    <br>
     <div class="container">
-    <h2>
-        Add a reviews about {{ dealer.full_name}}
-    </h2>
+        <div class="p-3 mb-2 bg-info text-white">
+            <h2>Add a review about {{ dealer.full_name}}</h2>
+        </div>    
     <!--Add review form here -->
     <form action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="username"><h6>Enter the review comment:</h6></label> <br/>
+            <label for="username" class="text-white"><h6>Enter the review comment:</h6></label> <br/>
             <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
         </div>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck"/>
-            <label for="purchased"><h6>Has purchased the car from {{ dealer.full_name }} ? <small> (select purchased car information below if checked)</small></h6></label>
+            <label for="purchased" class="text-white"><h6>Has purchased the car from {{ dealer.full_name }} ? <small> (select purchased car information below if checked)</small></h6></label>
         </div>
         <div class="form-group">
-            <label for="carselect"><h6>Select your car (model-make-year):</h6></label> &nbsp;
+            <label for="carselect" class="text-white"><h6>Select your car (model-make-year):</h6></label> &nbsp;
             <select name="car" id="car" class="form-select" required>
                 {% for car in cars %}
                 <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year|date:"Y" }}</option>
@@ -57,7 +66,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="purchasedate"><h6>Select your purchase date:</h6></label> <br/>
+            <label for="purchasedate" class="text-white"><h6>Select your purchase date:</h6></label> &nbsp;
             <input class="date-own .col-xs-3" type="text" name="purchasedate" id="purchasedate">
         </div>
         <div>

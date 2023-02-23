@@ -5,6 +5,19 @@
     <title>Dealership Review</title>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Meie+Script|Shadows+Into+Light|Arvo|Monda');
+        body  
+        {  
+            background-image:url("{{MEDIA_URL}}/images/car_forest.jpg") ;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        .font_shadows_into_light {
+            font-family: 'Shadows Into Light', cursive;
+          }
+    </style> 
 </head>
 
     <body>
@@ -58,27 +71,27 @@
         {% endif %}
     </nav>
 
+    <br>
     <div class="container">
-    <h2>
-        Reviews for {{ dealer.full_name}}
-    </h2>
+        <div class="p-3 mb-2 bg-info text-white">
+            <h2>Reviews for {{ dealer.full_name}}</h2>
+        </div>
 
 
     <!-- Add reviews as cards -->
     
     <div class="card-columns w-80">
     {% for review in dealer_reviews %}
-        <div class="card">
-            <div class="w-25 h-25">
-                <br/>&nbsp;
-            <img class="card-img-left w-25 h-25" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ review.car_make }}, {{review.car_model}}</h5>
-                <h5 class="card-title mb-2 text-muted">{{ review.car_year}}</h5>
-                <div class="card-text">{{ review.review }}</div>
-            </div>
+    <div class="card {{review.borderColor}} mb-3" >
+        <div class="card-header {{review.borderColor}}"><div class="w-25 h-25">
+        <img class="card-img-left w-25 h-25" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
+        </div></div>
+        <div class="card-body">
+          <h5 class="card-title">{{ review.car_make }}, {{review.car_model}} {{review.car_year}}</h5>
+          <p class="card-text  {{review.textColor}} lead font_shadows_into_light">{{review.review}}</p>
         </div>
+      </div>    
+
     {% endfor %}
     </div>
     </div>
